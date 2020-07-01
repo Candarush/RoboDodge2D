@@ -26,4 +26,19 @@ namespace RoboDodge
     {
         return y;
     }
+    
+    float Ball::GetSpeedX()
+    {
+        return xspeed;
+    }
+
+    float Ball::GetSpeedY()
+    {
+        return yspeed;
+    }
+
+    float Ball::GetRadius()
+    {
+        return radius;
+    }
 }

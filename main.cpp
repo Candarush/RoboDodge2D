@@ -6,33 +6,29 @@
 #include "SfSurface.hpp"
 #include "SfRobot.hpp"
 #include "SfBallLauncher.hpp"
-#include "Detector.hpp"
-
+#define M_PI 3.14159 
 using namespace RoboDodge;
 using namespace std;
-using namespace cv;
 
 int main(int argc, char const** argv)
 {
-    bool exit = false;
-    
     float width = 300;
     float height = 300;
-    
+    float speed = 100;
+    int shotAtTime = 0;
+    sf::Clock shootClock;
+    sf::Clock clock;
+    float deltaTime = 0.1;
+    bool autopilot;
+
     SfSurface ground(width,height,0,0);
+    SfRobot robot(25,25,width/2, height/2, speed, 0);
+    SfBallLauncher launcher(width/2+100, height/2+100, 5);
     
     sf::RenderWindow window(sf::VideoMode(width, height), "RoboDodge");
     
-    VideoCapture cap("/Users/vladislavakimov/src/robot2d/BallTestLine.mp4");
-    if(!cap.isOpened()){
-      cout << "Ошибка, видео не открыто." << endl;
-      return -1;
-    }
-    Detector detector(&cap, width, height);
-    
     while (window.isOpen())
     {
-        
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -47,22 +43,29 @@ int main(int argc, char const** argv)
                     window.close();
             }
         }
+        autopilot = robot.GetAP();
+        robot.Control(&event, autopilot, deltaTime, width);
+        if ((int)shootClock.getElapsedTime().asSeconds() % 3 == 0 && shotAtTime != (int)shootClock.getElapsedTime().asSeconds())
+        {   
+            shotAtTime = (int)shootClock.getElapsedTime().asSeconds();
+            float angle = atan2(launcher.GetY() - robot.GetY(), launcher.GetX() - robot.GetX())*180/M_PI+180;
+            launcher.Shoot(angle,200);
+        }
         
-        detector.FindBall();
-        SfBall ball(15, detector.GetBallX(), detector.GetBallY(), 0, 0);
-        SfRobot robot(15,15,detector.GetRobotX(), detector.GetRobotY()-8);
-        
+        launcher.UpdateBalls(ground, deltaTime);
         
         window.clear();
         
         window.draw(ground.GetShape());
-        window.draw(ball.GetShape());
+        window.draw(launcher.GetShape());
         window.draw(robot.GetShape());
+        
+        launcher.DisplayBalls(&window);
         
         window.display();
         
-        waitKey();
+        deltaTime = clock.restart().asSeconds();
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

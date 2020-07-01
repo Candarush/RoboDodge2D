@@ -1,5 +1,5 @@
 #include "BallLauncher.hpp"
-
+#define M_PI 3.14159
 namespace RoboDodge
 {
     BallLauncher::BallLauncher(float ix, float iy, float iballRadius)

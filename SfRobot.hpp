@@ -1,6 +1,7 @@
 #pragma once
 #include "Robot.hpp"
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
 namespace RoboDodge
 {

@@ -1,5 +1,5 @@
 #include "BallLauncher.hpp"
-#define M_PI 3.14159
+#define M_PI 3.14159265358979323846264338327950288
 namespace RoboDodge
 {
     BallLauncher::BallLauncher(float ix, float iy, float iballRadius)
@@ -19,10 +19,10 @@ namespace RoboDodge
     {
         for(int i = 0; i<balls.size(); i++)
         {
-            balls[i].UpdatePosition(timeElapsed);
-            if (!border.IsInsideBox(balls[i].GetX(), balls[i].GetY()))
+            balls[i].UpdatePosition(timeElapsed, border);
+            if (balls.size()>10)
             {
-                balls.erase(balls.begin()+i);
+                balls.erase(balls.begin()+0);
             }
         }
     }

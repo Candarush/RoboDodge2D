@@ -8,5 +8,7 @@ namespace RoboDodge
     public:
         Surface(float iwidth, float iheight, float ioffset_w, float ioffset_h);
         bool IsInsideBox(float x, float y);
+        float GetWidth();
+        float GetHeight();
     };
 }

@@ -9,10 +9,10 @@ namespace RoboDodge
         shape.setPosition(ix, iy);
     }
 
-    void SfBall::UpdatePosition(float timeElapsed)
+    void SfBall::UpdatePosition(float timeElapsed, Surface ground)
     {
         
-        Ball::UpdatePosition(timeElapsed);
+        Ball::UpdatePosition(timeElapsed, ground);
         shape.setPosition(Ball::GetX(), Ball::GetY());
     }
 

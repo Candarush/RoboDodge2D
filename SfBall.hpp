@@ -9,7 +9,7 @@ namespace RoboDodge
         sf::CircleShape shape;
     public:
         SfBall(float iradius, float ix, float iy, float ixspeed, float iyspeed);
-        void UpdatePosition(float timeElapsed);
+        void UpdatePosition(float timeElapsed, Surface ground);
         float GetX();
         float GetY();
         sf::CircleShape GetShape();

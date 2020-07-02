@@ -23,4 +23,13 @@ namespace RoboDodge
         return true;
     }
 
+    float Surface::GetWidth()
+    {
+        return width;
+    }
+
+    float Surface::GetHeight()
+    {
+        return height;
+    }
 }

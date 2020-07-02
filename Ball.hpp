@@ -1,4 +1,5 @@
 #pragma once
+#include "Surface.hpp"
 
 namespace RoboDodge
 {
@@ -7,7 +8,8 @@ namespace RoboDodge
         float radius, x, y, xspeed, yspeed;
     public:
         Ball(float radius, float ix, float iy, float xspeed, float yspeed);
-        void UpdatePosition(float timeElapsed);
+        void UpdatePosition(float timeElapsed, Surface ground);
+        void Bounce(Surface ground);
         float GetX();
         float GetY();
         float GetSpeedX();

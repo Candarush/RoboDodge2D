@@ -16,22 +16,18 @@ using namespace sf;
 using namespace cv;
 
 int main(int argc, char const** argv)
-{
-    bool exit = false;
-    
-    float width = 300;
-    float height = 300;
-    
-    SfSurface ground(300,300,0,0);
-    
-    sf::RenderWindow window(sf::VideoMode(1500, 500), "RoboDodge");
-    
+{   
     VideoCapture cap("BallTestLine.mp4");
     if(!cap.isOpened()){
       cout << "Ошибка, видео не открыто." << endl;
       return -1;
     }
+    
     Detector detector(&cap, width, height);
+    
+    SfSurface ground(300,300,0,0);
+    
+    sf::RenderWindow window(sf::VideoMode(1500, 500), "RoboDodge");
     
     while (window.isOpen() && !detector.GetFrame().empty())
     {

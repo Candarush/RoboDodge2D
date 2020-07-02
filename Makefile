@@ -5,8 +5,8 @@ CC=g++
 STD=c++11
 
 # Opencv
-OPENCVINCLUDES = $(shell pkg-config --cflags opencv4)
-OPENCVLIBS = $(shell pkg-config --libs opencv4)
+OPENCVINCLUDES = $(shell pkg-config --cflags opencv)
+OPENCVLIBS = $(shell pkg-config --libs opencv)
 
 .PHONY: all
 

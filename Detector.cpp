@@ -7,15 +7,12 @@ namespace RoboDodge
         surfaceX = isurfaceX;
         surfaceY = isurfaceY;
         capture = icapture;
-        namedWindow("RoboDodge2d Detector", WINDOW_AUTOSIZE);
-        Mat firstFrame;
-        capture->read(firstFrame);
-        imshow("RoboDodge2d Detector", firstFrame);
+        capture->read(frame);
     }
 
     void Detector::FindBall()
     {
-        Mat frame, hsv;
+        Mat hsv;
         
         (*capture) >> frame;
         
@@ -44,7 +41,6 @@ namespace RoboDodge
         vector<cv::Point> contPoly;
         vector<cv::Vec4i> hierarchy;
         cv::findContours(ballCopy,contours,hierarchy,RETR_EXTERNAL,CHAIN_APPROX_SIMPLE);
-        cout << "Найдено контуров: " << contours.size() << endl;
         
         vector<cv::Point> Centers;
         vector<Moments> mu(contours.size() );
@@ -59,7 +55,6 @@ namespace RoboDodge
         for(i = 0; i < contours.size(); i++ )
         {
             Point2f centerofmass = Point2f( mu[i].m10/mu[i].m00 , mu[i].m01/mu[i].m00 );
-            cout<<"Центр: (" << centerofmass.x << ", " << centerofmass.y << ")"<<endl;
             circle( result, centerofmass, 1, Scalar(0,0,255), -1, 8, 0 );
             Centers.push_back(centerofmass);
         }
@@ -72,8 +67,8 @@ namespace RoboDodge
         
         cv::findContours(line,contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
 
-        screenLineRight = Point(0, 0);
-        screenLineLeft = Point(line.cols, 0);
+        screenLineRight = cv::Point(0, 0);
+        screenLineLeft = cv::Point(line.cols, 0);
         
         for( int i = 0; i< contours.size(); i++ )
         {
@@ -86,19 +81,19 @@ namespace RoboDodge
             cv::line(result, corners[2], corners[3], cv::Scalar(0,150,0));
             cv::line(result, corners[3], corners[0], cv::Scalar(0,150,0));
             
-            for (j = 0; j < 2; j++)
+            for (j = 0; j < 4; j++)
             {
                 float x = corners[j].x;
                 float y = corners[j].y;
                 
                 if (x < screenLineLeft.x)
                 {
-                    screenLineLeft = Point(corners[j]);
+                    screenLineLeft = corners[j];
                 }
                 
                 if (x > screenLineRight.x)
                 {
-                    screenLineRight = Point(corners[j]);
+                    screenLineRight = corners[j];
                 }
             }
         }
@@ -114,7 +109,6 @@ namespace RoboDodge
         Point screenRobot(screenWidth/2, screenHeight);
         
         float screenWallHeight = (screenLineLeft.y+screenLineRight.y)/2;
-        cout<< "screenWallHeight= " << screenWallHeight<<endl;
         
         robotPos.x = (screenWidth/2-screenLineLeft.x)/(screenLineRight.x - screenLineLeft.x) * surfaceX;
         robotPos.y = surfaceY;
@@ -133,20 +127,15 @@ namespace RoboDodge
             ballPos.y =  bpY * surfaceY;
             ballPos.x = -((modelCrossX - robotPos.x) * ballPos.y + (robotPos.x*ballPos.y-modelCrossX*robotPos.y))/(robotPos.y);
             ballPos.y =  ((bpY+1)*(bpY+1)*(bpY+1)*(bpY+1)-1) * surfaceY;
-            cout<<"Позиция шайбы: "<< ballPos <<endl;
             
         }
         
-        cout<<"Позиция робота: "<< robotPos <<endl;
-        
         Mat3b finalResult(frame.rows, frame.cols+result.cols, Vec3b(0,0,0));
 
-        frame.copyTo(finalResult(Rect(0, 0, frame.cols, frame.rows)));
-        result.copyTo(finalResult(Rect(frame.cols, 0, result.cols, result.rows)));
+        frame.copyTo(finalResult(cv::Rect(0, 0, frame.cols, frame.rows)));
+        result.copyTo(finalResult(cv::Rect(frame.cols, 0, result.cols, result.rows)));
         
-        imshow("RoboDodge2d Detector", finalResult);
-        
-        waitKey();
+        resultMat = finalResult.clone();
 
     }
 
@@ -169,5 +158,33 @@ namespace RoboDodge
     {
         return robotPos.y;
     }
+    
+    void Detector::DrawResultAt(RenderWindow* window,float posx, float posy)
+    {
+        sf::Texture texture;
+        sf::Sprite sprite;
+        sf::Image image;
+        
+        cv::Mat frameRGBA;
 
+        cv::cvtColor(resultMat, frameRGBA, cv::COLOR_BGR2RGBA);
+        
+        image.create(frameRGBA.cols, frameRGBA.rows, frameRGBA.ptr());
+        
+        if (!texture.loadFromImage(image))
+        {
+            cout<<"Ошибка, текстура не наложена!"<<endl;
+            return;
+        }
+        
+        sprite.setTexture(texture);
+        sprite.setPosition(posx, posy);
+        
+        window->draw(sprite);
+    }
+
+    Mat Detector::GetFrame()
+    {
+        return frame;
+    }
 }

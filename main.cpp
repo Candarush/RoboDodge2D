@@ -23,9 +23,12 @@ int main(int argc, char const** argv)
       return -1;
     }
     
-    Detector detector(&cap, width, height);
+    float width = 300;
+    float height = 300;
     
-    SfSurface ground(300,300,0,0);
+    SfSurface ground(width,300,0,0);
+    
+    Detector detector(&cap, width, height);
     
     sf::RenderWindow window(sf::VideoMode(1500, 500), "RoboDodge");
     

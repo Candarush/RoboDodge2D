@@ -22,8 +22,8 @@ int main(int argc, char const** argv)
     bool autopilot;
 
     SfSurface ground(width,height,0,0);
-    SfRobot robot(25,25,width/2, height/2, speed, 0);
-    SfBallLauncher launcher(width/2+100, height/2+100, 5);
+    SfRobot robot(25,25,width/4, (height-25), speed, 0);
+    SfBallLauncher launcher(width/2+100, height/2-100, 5);
     
     sf::RenderWindow window(sf::VideoMode(width, height), "RoboDodge");
     

@@ -14,8 +14,8 @@ using namespace std;
 using namespace sf;
 using namespace cv;
 
-float width = 300;
-float height = 300;
+float width = 400;
+float height = 400;
 
 Surface ground(width, height, 0, 0);
 SfRobot robot(15,15,50, height,0,0);
@@ -30,6 +30,8 @@ float deltaTime, timer;
 //cv::Mat frameRGB;
 //
 //sf::RenderWindow window(sf::VideoMode(500, 500), "SFML");
+
+Mat frame;
 
 void resetTransforms()
 {
@@ -115,14 +117,14 @@ void draw()
         glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
     
         drawBox(0,3,-5,10,4,10);
-        drawSphere(0.4,ball.GetX()/20-10,-0.4,ball.GetY()/20-10);
+        drawSphere(0.4,ball.GetX()/20-10,-0.6,(ball.GetY()/20-10)-5);
     
-        cv::Mat img(height, width, CV_8UC3);
+        cv::Mat img(height, width, CV_8UC3,Scalar(0,0,50));
         glPixelStorei(GL_PACK_ALIGNMENT, (img.step & 3) ? 1 : 4);
         glPixelStorei(GL_PACK_ROW_LENGTH, img.step/img.elemSize());
         glReadPixels(0, 0, img.cols, img.rows, GL_BGR, GL_UNSIGNED_BYTE, img.data);
     
-        imshow("OpenCV", img);
+        frame = img.clone();
     
         glutSwapBuffers();
 }
@@ -150,6 +152,8 @@ void handleResize(int w, int h)
 
 void Update ()
 {
+    
+    imshow("OpenCV", frame);
     
     deltaTime = ((float)clock()/ ( CLOCKS_PER_SEC / 1000 )) - timer;
     
@@ -179,7 +183,7 @@ int main(int argc, char **argv)
 {
     timer = 0; deltaTime = 0;
     
-    cv::Mat frame(600, 600, CV_8UC3);
+    frame = Mat(600, 600, CV_8UC3,Scalar(50,0,0));
     namedWindow("OpenCV", WINDOW_AUTOSIZE);
     imshow("OpenCV", frame);
     

@@ -4,20 +4,22 @@ CC=g++
 # Стандарт
 STD=c++11
 
-# Opencv
-OPENCVINCLUDES = $(shell pkg-config --cflags opencv)
 OPENCVLIBS = $(shell pkg-config --libs opencv)
+
+SFMLLIBS = -lsfml-graphics -lsfml-window -lsfml-system 
+
+OPENGLLIBS = -lGL -lglut -lGLU -lGLEW 
 
 .PHONY: all
 
 all: exec clean
 
 exec: main.o Detector.o SfSurface.o Surface.o Ball.o SfBall.o BallLauncher.o SfBallLauncher.o Robot.o SfRobot.o
-	$(CC) Detector.o Surface.o SfSurface.o Ball.o SfBall.o BallLauncher.o SfBallLauncher.o Robot.o SfRobot.o main.o -o exec -lsfml-graphics -lsfml-window -lsfml-system $(OPENCVLIBS)
+	$(CC) Detector.o Surface.o SfSurface.o Ball.o SfBall.o BallLauncher.o SfBallLauncher.o Robot.o SfRobot.o main.o -o exec $(SFMLLIBS) $(OPENCVLIBS) $(OPENGLLIBS)
 main.o: main.cpp
-	$(CC) -std=$(STD) $(OPENCVINCLUDES) -c main.cpp
+	$(CC) -std=$(STD) -c main.cpp
 Detector.o: Detector.cpp Detector.hpp
-	$(CC) -std=$(STD) $(OPENCVINCLUDES) -c Detector.cpp
+	$(CC) -std=$(STD) -c Detector.cpp
 Surface.o: Surface.cpp Surface.hpp
 	$(CC) -std=$(STD) -c Surface.cpp
 SfSurface.o: SfSurface.cpp SfSurface.hpp

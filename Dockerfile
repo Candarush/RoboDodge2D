@@ -7,8 +7,15 @@ RUN apt-get install wget -y
 RUN apt-get install gcc -y
 RUN apt-get install clang -y
 RUN apt-get install g++ -y
+
+#SFML
 RUN apt-get install libsfml-dev -y
+
+#OPENCV
 RUN apt-get install libopencv-dev -y
+
+#OPENGL
+RUN apt-get install -y mesa-common-dev freeglut3-dev libglew-dev
 
 COPY . /usr/src/
 WORKDIR /usr/src/

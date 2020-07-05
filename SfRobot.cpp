@@ -67,7 +67,7 @@ namespace RoboDodge
                     Move(GetSpeedX() * deltm, 0, ground);
                     shape.setPosition(GetX(), GetY());
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            /*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
             {
                     Move(0, -GetSpeedY() * deltm, ground);
                     shape.setPosition(GetX(), GetY());
@@ -75,10 +75,10 @@ namespace RoboDodge
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
                     Move(0, GetSpeedY() * deltm, ground);
                     shape.setPosition(GetX(), GetY());
-            }
+            }*/
     }
     void SfRobot::Dodge(float iballspeedx, float iballspeedy, float deltm, Surface ground){
-        Move(-iballspeedy * deltm, iballspeedx * deltm, ground);
+        Move(-iballspeedy * deltm, 0, ground);
         shape.setPosition(GetX(), GetY());
     }
     sf::RectangleShape SfRobot::GetShape()

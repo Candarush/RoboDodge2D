@@ -1,5 +1,4 @@
 #include "SfRobot.hpp"
-
 namespace RoboDodge
 {
     SfRobot::SfRobot(float iwidth, float iheight, float ix, float iy, float ispeedx, float ispeedy) : Robot(iwidth, iheight, ix, iy, ispeedx, ispeedy)
@@ -9,9 +8,9 @@ namespace RoboDodge
         shape.setPosition(ix,iy);
     }
 
-    void SfRobot::Move(float ispeedx, float ispeedy)
+    void SfRobot::Move(float ispeedx, float ispeedy, Surface ground)
     {
-        Robot::Move(ispeedx, ispeedy);
+        Robot::Move(ispeedx, ispeedy, ground);
     }
 
     float SfRobot::GetX()
@@ -29,6 +28,11 @@ namespace RoboDodge
         return Robot::GetSpeedX();
     }
     
+    float SfRobot::GetSpeedY()
+    {
+        return Robot::GetSpeedY();
+    }
+
     float SfRobot::GetTime()
     {
         return Robot::GetTime();
@@ -39,53 +43,43 @@ namespace RoboDodge
         Robot::PutSpeedX(ispeed);
     }
 
-    void SfRobot::Control(sf::Event* ev, bool iauto, float deltm, float wdth){
+    void SfRobot::PutAP(bool iauto)
+    {
+        Robot::PutAP(iauto);
+    }
+
+    bool SfRobot::GetAP()
+    {
+        return Robot::GetAP();
+    }
+
+    bool SfRobot::Danger(float iballx, float ibally, float iradius, float iballspeedx, float iballspeedy)
+    {
+        return Robot::Danger(iballx, ibally, iradius, iballspeedx, iballspeedy);
+    }
+    void SfRobot::Control(sf::Event* ev, bool iauto, float deltm, Surface ground){
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
             {
-                if (GetX() > 0) {
-                    Move(-GetSpeedX() * deltm, 0);
+                    Move(-GetSpeedX() * deltm, 0, ground);
                     shape.setPosition(GetX(), GetY());
-                }
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-                if ((GetX() + GetWidth()) < wdth) {
-                    Move(GetSpeedX() * deltm, 0);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+                    Move(GetSpeedX() * deltm, 0, ground);
                     shape.setPosition(GetX(), GetY());
-                }
             }
-
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            {
+                    Move(0, -GetSpeedY() * deltm, ground);
+                    shape.setPosition(GetX(), GetY());
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+                    Move(0, GetSpeedY() * deltm, ground);
+                    shape.setPosition(GetX(), GetY());
+            }
     }
-    void SfRobot::Dodge(float iballx, float ibally, float iballspeedx, float iballspeedy, float iradius, float deltm){
-        float tm, dx, dy, metr, spd, col, dodgespeed;
-        dx = iballx - GetX();
-        dy = ibally - GetY();
-        metr = sqrt(pow(dx, 2) + pow(dy, 2));
-        spd = sqrt(pow(iballspeedx, 2) + pow(iballspeedy, 2));
-        tm = metr / spd;
-        if (iradius < GetWidth() / 2) {
-            dodgespeed = GetWidth() / 2 / tm;
-            PutSpeedX(dodgespeed);
-            if (dx > 0) {
-                Move(-GetSpeedX() * deltm, 0);
-                shape.setPosition(GetX(), GetY());
-            }
-            else {
-                Move(GetSpeedX() * deltm, 0);
-                shape.setPosition(GetX(), GetY());
-            }
-        }
-        else {
-            dodgespeed = (iradius + 1) / tm;
-            PutSpeedX(dodgespeed);
-            if (dx > 0) {
-                Move(-GetSpeedX() * deltm, 0);
-                shape.setPosition(GetX(), GetY());
-            }
-            else {
-                Move(GetSpeedX() * deltm, 0);
-                shape.setPosition(GetX(), GetY());
-            }
-        }
+    void SfRobot::Dodge(float iballspeedx, float iballspeedy, float deltm, Surface ground){
+        Move(-iballspeedy * deltm, iballspeedx * deltm, ground);
+        shape.setPosition(GetX(), GetY());
     }
     sf::RectangleShape SfRobot::GetShape()
     {

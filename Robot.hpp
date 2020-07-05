@@ -1,23 +1,26 @@
 #pragma once
+#include <cmath>
+#include <iostream>
+#include "Ball.hpp"
+#include "Surface.hpp"
+
+using namespace std;
 
 namespace RoboDodge
 {
     class Robot
     {
         bool autopilot;
-        float width, height, x, y, speedx, speedy, time;
+        float width, height, x, y, speedx, time;
     public:
-        Robot(float iwidth, float iheight, float ix, float iy, float ispeedx, float ispeedy);
-        void Move(float ispeedx, float ispeedy);
+        Robot(float iwidth, float iheight, float ix, float iy, float ispeedx);
+        void Move(float ispeedx, float deltaTime, Surface ground);
         float GetX();
         float GetY();
         float GetWidth();
-        void PutWidth(float iwidth);
         float GetSpeedX();
-        void PutSpeedX(float ispeed);
-        float GetTime();
-        void PutTimeX(float itime);
-        void PutAP(bool iauto);
         bool GetAP();
+        bool Danger(Ball ball);
+        void Dodge(Ball ball, float deltm, Surface ground);
     };
 }

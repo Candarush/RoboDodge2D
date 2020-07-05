@@ -1,23 +1,25 @@
 #include "Robot.hpp"
-#include <cmath>
 
 namespace RoboDodge
 {
-    Robot::Robot(float iwidth, float iheight, float ix, float iy, float ispeedx, float ispeedy)
+    Robot::Robot(float iwidth, float iheight, float ix, float iy, float ispeedx)
     {
         width = iwidth;
         height = iheight;
         x = ix;
         y = iy;
         speedx = ispeedx;
-        speedy = ispeedy;
         autopilot = false;
     }
 
-    void Robot::Move(float ix, float iy)
+    void Robot::Move(float ix, float deltaTime, Surface ground)
     {
-        x += ix;
-        y += iy;
+        if ((x - width  > 0) && (ix < 0)) {
+            x -= speedx * deltaTime;
+        };
+        if (((x + width) < ground.GetWidth()) && (ix > 0)) {
+            x += speedx * deltaTime;
+        };
     }
 
     float Robot::GetX()
@@ -33,32 +35,41 @@ namespace RoboDodge
     {
         return speedx;
     }
-    float Robot::GetWidth()
-    {
-        return width;
-    }
-    void Robot::PutWidth(float iwidth)
-    {
-        width = iwidth;
-    }
-    void Robot::PutSpeedX(float ispeed)
-    {
-        speedx = ispeed;
-    }
-    float Robot::GetTime()
-    {
-        return time;
-    }
-    void Robot::PutTimeX(float itime)
-    {
-        time = itime;
-    }
-    void Robot::PutAP(bool iauto)
-    {
-        autopilot = iauto;
-    }
     bool Robot::GetAP()
     {
         return autopilot;
+    }
+
+    bool Robot::Danger(Ball ball) {
+        float tm, dx, dy, metr, spd;
+        dx = ball.GetX() - x;
+        dy = ball.GetY() - y;
+        metr = sqrt(pow(dx, 2) + pow(dy, 2));
+        spd = sqrt(pow(ball.GetSpeedX(), 2) + pow(ball.GetSpeedY(), 2));
+        tm = metr / spd;
+        
+        if (((x - width) < ball.GetSpeedX() * tm + ball.GetX()) &&
+            (ball.GetSpeedX() * tm + ball.GetX() < (x + width)) &&
+            ((y - width) < ball.GetSpeedY() * tm + ball.GetY()) &&
+            (ball.GetSpeedY() * tm + ball.GetY() < (y + width)))
+        {
+            autopilot = true;
+            return true;
+        }
+        autopilot = false;
+        return false;
+    }
+
+    void Robot::Dodge(Ball ball, float deltm, Surface ground){
+        cout<<"Уворачиваюсь!"<<endl;
+        
+        if (ball.GetSpeedX()>0)
+        {
+            Move(-1, deltm, ground);
+        }
+        else
+        {
+            Move(1, deltm, ground);
+        }
     }
 }

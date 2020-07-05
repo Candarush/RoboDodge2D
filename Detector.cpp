@@ -2,19 +2,15 @@
 
 namespace RoboDodge
 {
-    Detector::Detector(VideoCapture* icapture, float isurfaceX, float isurfaceY)
+    Detector::Detector(float isurfaceX, float isurfaceY)
     {
         surfaceX = isurfaceX;
         surfaceY = isurfaceY;
-        capture = icapture;
-        capture->read(frame);
     }
 
-    void Detector::FindBall()
+    void Detector::FindBall(cv::Mat frame)
     {
         Mat hsv;
-        
-        (*capture) >> frame;
         
         if (frame.empty())
         {
@@ -158,33 +154,9 @@ namespace RoboDodge
     {
         return robotPos.y;
     }
-    
-    void Detector::DrawResultAt(RenderWindow* window,float posx, float posy)
-    {
-        sf::Texture texture;
-        sf::Sprite sprite;
-        sf::Image image;
-        
-        cv::Mat frameRGBA;
 
-        cv::cvtColor(resultMat, frameRGBA, cv::COLOR_BGR2RGBA);
-        
-        image.create(frameRGBA.cols, frameRGBA.rows, frameRGBA.ptr());
-        
-        if (!texture.loadFromImage(image))
-        {
-            cout<<"Ошибка, текстура не наложена!"<<endl;
-            return;
-        }
-        
-        sprite.setTexture(texture);
-        sprite.setPosition(posx, posy);
-        
-        window->draw(sprite);
-    }
-
-    Mat Detector::GetFrame()
+    Mat Detector::GetResult()
     {
-        return frame;
+        return resultMat;
     }
 }

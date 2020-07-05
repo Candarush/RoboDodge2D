@@ -66,7 +66,7 @@ namespace RoboDodge
         metr = sqrt(pow(dx, 2) + pow(dy, 2));
         spd = sqrt(pow(ball.GetSpeedX(), 2) + pow(ball.GetSpeedY(), 2));
         tm = metr / spd;
-        if (((GetX() - GetWidth()) < ball.GetSpeedX() * tm + ball.GetX()) && (ball.GetSpeedX() * tm + ball.GetX() < (GetX() + GetWidth())) && ((GetY() - GetWidth()) < ball.GetSpeedY() * tm + ball.GetY()) && (ball.GetSpeedY() * tm + ball.GetY() < (GetY() + GetWidth()))) {
+        if (((GetX() - GetWidth()) < (ball.GetSpeedX() * tm + ball.GetX())) && ((ball.GetSpeedX() * tm + ball.GetX()) < (GetX() + GetWidth())) && ((GetY() - GetWidth()) < (ball.GetSpeedY() * tm + ball.GetY())) && ((ball.GetSpeedY() * tm + ball.GetY()) < (GetY() + GetWidth()))) {
             PutAP(true);
             return true;
         }

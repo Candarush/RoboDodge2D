@@ -1,4 +1,5 @@
 #pragma once
+#include "Ball.hpp"
 #include "Surface.hpp"
 namespace RoboDodge
 {
@@ -20,7 +21,7 @@ namespace RoboDodge
         void PutTimeX(float itime);
         void PutAP(bool iauto);
         bool GetAP();
-        bool Danger(float iballx, float ibally, float iradius, float iballspeedx, float iballspeedy);
+        bool Danger(Ball ball);
     };
 }
 

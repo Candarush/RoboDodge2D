@@ -6,6 +6,7 @@ namespace RoboDodge
     float OpenGLRenderer::timer = 0;
     Surface* OpenGLRenderer::ground;
     Robot* OpenGLRenderer::robot;
+    float OpenGLRenderer::movementDirection = 0;
     vector<Ball>* OpenGLRenderer::balls;
     void (*OpenGLRenderer::UpdateFunc)(float, Mat frame);
 
@@ -18,10 +19,11 @@ namespace RoboDodge
         glutInit(&argc, argv);
         glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
         glutInitWindowSize (iwindowWidth, iwindowHeight);
-        glutInitWindowPosition(0,300);
+        glutInitWindowPosition(0,iwindowHeight);
         glutCreateWindow ("OpenGL");
         glutDisplayFunc(Draw);
         glutSpecialFunc(KeyboardControl);
+        glutSpecialUpFunc(KeyboardButtonRelease);
         InitRendering();
         glutReshapeFunc(HandleResize);
         glutIdleFunc(OpenGLUpdate);
@@ -145,7 +147,7 @@ namespace RoboDodge
 
     void OpenGLRenderer::OpenGLUpdate()
     {
-        cv::Mat img(300, 300, CV_8UC3,Scalar(0,0,255));
+        cv::Mat img(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), CV_8UC3,Scalar(0,0,255));
         glPixelStorei(GL_PACK_ALIGNMENT, (img.step & 3) ? 1 : 4);
         glPixelStorei(GL_PACK_ROW_LENGTH, img.step/img.elemSize());
         glReadPixels(0, 0, img.cols, img.rows, GL_BGR, GL_UNSIGNED_BYTE, img.data);
@@ -156,6 +158,8 @@ namespace RoboDodge
 //        waitKey(1);
         
         deltaTime = ((float)clock()/ ( CLOCKS_PER_SEC / 1000 )) - timer;
+
+        robot->Move(movementDirection,deltaTime, *ground);
         
         UpdateFunc(deltaTime, img.clone());
         
@@ -168,17 +172,34 @@ namespace RoboDodge
     {
         switch (key)
         {
-            case 27:  break;
             case 100:
             {
-                if ((robot->GetAP() == false))
-                    robot->Move(-1,deltaTime, *ground);
+                if (robot->GetAP() == false)
+                    movementDirection = -1;
                 break;
             }
             case 102:
             {
                 if (robot->GetAP() == false)
-                    robot->Move(1,deltaTime, *ground);
+                    movementDirection = 1;
+                break;
+            }
+            default: break;
+        }
+    }
+
+    void OpenGLRenderer::KeyboardButtonRelease(int key, int x, int y)
+    {
+        switch (key)
+        {
+            case 100:
+            {
+                movementDirection = 0;
+                break;
+            }
+            case 102:
+            {
+                movementDirection = 0;
                 break;
             }
             default: break;

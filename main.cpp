@@ -53,7 +53,7 @@ int main(int argc, char **argv)
     
     m.balls.push_back(Ball(10,50,50, 0.5,1));
     
-    OpenGLRenderer renderer(argc, argv, 300,300, m.Update, &(m.balls), &(m.robot), &(m.ground));
+    OpenGLRenderer renderer(argc, argv, 350,350, m.Update, &(m.balls), &(m.robot), &(m.ground));
     
     return 0;
 }

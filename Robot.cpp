@@ -61,8 +61,6 @@ namespace RoboDodge
     }
 
     void Robot::Dodge(Ball ball, float deltm, Surface ground){
-        cout<<"Уворачиваюсь!"<<endl;
-        
         if (ball.GetSpeedX()>0)
         {
             Move(-1, deltm, ground);

@@ -18,6 +18,7 @@ namespace RoboDodge
         
         static vector<Ball>* balls;
         static Robot* robot;
+        static float movementDirection;
         static Surface* ground;
         
         static void (*UpdateFunc)(float, Mat frame);
@@ -29,6 +30,7 @@ namespace RoboDodge
         static void DrawSphere(float radius, float x, float y, float z);
         static void DrawBox(float ox, float oy, float oz, float x, float y, float z);
         static void KeyboardControl(int key, int x, int y);
+        static void KeyboardButtonRelease(int key, int x, int y);
     public:
         OpenGLRenderer(int argc, char** argv, float windowWidth, float windowHeight, void (*UpdateFunc)(float, Mat), vector<Ball>* balls, Robot* robot, Surface* ground);
     };

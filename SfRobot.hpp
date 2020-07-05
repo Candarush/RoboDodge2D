@@ -18,9 +18,9 @@ namespace RoboDodge
         float GetTime();
         bool GetAP();
         void PutAP(bool iauto);
-        bool Danger(float iballx, float ibally, float iradius, float iballspeedx, float iballspeedy);
+        bool Danger(Ball ball);
         void Control(sf::Event *ev, bool iauto, float deltm, Surface ground);
-        void Dodge(float iballspeedx, float iballspeedy, float deltm, Surface ground);
+        void Dodge(Ball ball float deltm, Surface ground);
         sf::RectangleShape GetShape();
         sf::RectangleShape setPosition();
     };

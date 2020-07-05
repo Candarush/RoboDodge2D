@@ -6,7 +6,6 @@
 #include "SfSurface.hpp"
 #include "SfRobot.hpp"
 #include "SfBall.hpp"
-/*#include "SfBallLauncher.hpp"*/
 #define M_PI 3.14159 
 using namespace RoboDodge;
 using namespace std;
@@ -46,8 +45,8 @@ int main(int argc, char const** argv)
            robot.Control(&event, robot.GetAP(), deltaTime, ground);
        }
         ball.UpdatePosition(deltaTime, ground);
-        if (robot.Danger(ball.GetX(), ball.GetY(), ball.GetRadius(), ball.GetSpeedX(), ball.GetSpeedY()) == true) {
-            robot.Dodge(ball.GetSpeedX(), ball.GetSpeedY(), deltaTime, ground);
+        if (robot.Danger(ball) == true) {
+            robot.Dodge(ball, deltaTime, ground);
             robot.PutAP(false);
         }
         window.clear();

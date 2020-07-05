@@ -53,9 +53,9 @@ namespace RoboDodge
         return Robot::GetAP();
     }
 
-    bool SfRobot::Danger(float iballx, float ibally, float iradius, float iballspeedx, float iballspeedy)
+    bool SfRobot::Danger(Ball ball)
     {
-        return Robot::Danger(iballx, ibally, iradius, iballspeedx, iballspeedy);
+        return Robot::Danger(ball);
     }
     void SfRobot::Control(sf::Event* ev, bool iauto, float deltm, Surface ground){
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -77,8 +77,8 @@ namespace RoboDodge
                     shape.setPosition(GetX(), GetY());
             }*/
     }
-    void SfRobot::Dodge(float iballspeedx, float iballspeedy, float deltm, Surface ground){
-        Move(-iballspeedy * deltm, 0, ground);
+    void SfRobot::Dodge(Ball ball, float deltm, Surface ground){
+        Move(-ball.GetSpeedX() * deltm, 0, ground);
         shape.setPosition(GetX(), GetY());
     }
     sf::RectangleShape SfRobot::GetShape()

@@ -51,22 +51,6 @@ namespace RoboDodge
     {
         return width;
     }
-    void Robot::PutWidth(float iwidth)
-    {
-        width = iwidth;
-    }
-    void Robot::PutSpeedX(float ispeed)
-    {
-        speedx = ispeed;
-    }
-    float Robot::GetTime()
-    {
-        return time;
-    }
-    void Robot::PutTimeX(float itime)
-    {
-        time = itime;
-    }
     void Robot::PutAP(bool iauto)
     {
         autopilot = iauto;

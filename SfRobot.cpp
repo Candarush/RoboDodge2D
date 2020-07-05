@@ -78,8 +78,14 @@ namespace RoboDodge
             }*/
     }
     void SfRobot::Dodge(Ball ball, float deltm, Surface ground){
-        Move(-ball.GetSpeedX() * deltm, 0, ground);
-        shape.setPosition(GetX(), GetY());
+        if(x - ball.GetX() < 0){
+            Move(ball.GetSpeedX() * deltm, 0, ground);
+            shape.setPosition(GetX(), GetY());
+        }
+        else if (x - ball.GetX() >= 0){
+            Move(-ball.GetSpeedX() * deltm, 0, ground);
+            shape.setPosition(GetX(), GetY());
+        }
     }
     sf::RectangleShape SfRobot::GetShape()
     {

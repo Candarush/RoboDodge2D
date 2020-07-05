@@ -75,14 +75,14 @@ namespace RoboDodge
     {
         return autopilot;
     }
-    bool Robot::Danger(float iballx, float ibally, float iradius, float iballspeedx, float iballspeedy) {
+    bool Robot::Danger(Ball ball) {
         float tm, dx, dy, metr, spd;
-        dx = iballx - GetX();
-        dy = ibally - GetY();
+        dx = ball.GetX() - GetX();
+        dy = ball.GetY() - GetY();
         metr = sqrt(pow(dx, 2) + pow(dy, 2));
-        spd = sqrt(pow(iballspeedx, 2) + pow(iballspeedy, 2));
+        spd = sqrt(pow(ball.GetSpeedX(), 2) + pow(ball.GetSpeedY(), 2));
         tm = metr / spd;
-        if (((GetX() - GetWidth()) < iballspeedx * tm + iballx) && (iballspeedx * tm + iballx < (GetX() + GetWidth())) && ((GetY() - GetWidth()) < iballspeedy * tm + ibally) && (iballspeedy * tm + ibally < (GetY() + GetWidth()))) {
+        if (((GetX() - GetWidth()) < ball.GetSpeedX() * tm + ball.GetX()) && (ball.GetSpeedX() * tm + ball.GetX() < (GetX() + GetWidth())) && ((GetY() - GetWidth()) < ball.GetSpeedY() * tm + ball.GetY()) && (ball.GetSpeedY() * tm + ball.GetY() < (GetY() + GetWidth()))) {
             PutAP(true);
             return true;
         }

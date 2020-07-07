@@ -1,5 +1,7 @@
 #pragma once
 #include <opencv2/opencv.hpp>
+#include "Ball.hpp"
+#include "Robot.hpp"
 #include <string>
 #include <cmath>
 #include <vector>
@@ -11,17 +13,20 @@ namespace RoboDodge
 {
     class Detector
     {
+        vector<Ball>* realBalls;
+        Robot* realRobot;
         Mat resultMat;
         float surfaceX, surfaceY;
-        cv::Point ballPos, robotPos;
-        cv::Point screenLineLeft, screenLineRight;
+        vector<Ball> balls;
+        cv::Point robotPos, screenLineLeft, screenLineRight;
     public:
-        Detector(float isurfaceX, float isurfaceY);
-        void FindBall(cv::Mat frame);
-        float GetBallX();
-        float GetBallY();
+        Detector(float isurfaceX, float isurfaceY, vector<Ball>* realBalls, Robot* realRobot);
+        void FindBall(cv::Mat frame, float deltaTime);
+        vector<Ball>* GetBalls();
         float GetRobotX();
         float GetRobotY();
+        Mat Get2DResult();
         Mat GetResult();
+        void SendInfluxDBData();
     };
 }

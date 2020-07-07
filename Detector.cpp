@@ -2,13 +2,42 @@
 
 namespace RoboDodge
 {
-    Detector::Detector(float isurfaceX, float isurfaceY)
+    Detector::Detector(float isurfaceX, float isurfaceY, vector<Ball>* irealBalls, Robot* irealRobot)
     {
         surfaceX = isurfaceX;
         surfaceY = isurfaceY;
+        realBalls = irealBalls;
+        realRobot = irealRobot;
     }
 
-    void Detector::FindBall(cv::Mat frame)
+    Mat Detector::Get2DResult()
+    {
+        Mat3b outimg(surfaceX, surfaceY, Vec3b(150,150,150));
+        
+        for (int i = 0; i<realBalls->size(); i++)
+        {
+            circle(outimg, Point(realBalls->at(i).GetX(), realBalls->at(i).GetY()), 10, Scalar(0,50,205), 1);
+            line(outimg, Point(realBalls->at(i).GetX(), realBalls->at(i).GetY()), Point(realBalls->at(i).GetX()+realBalls->at(i).GetSpeedX()*1000, realBalls->at(i).GetY()+realBalls->at(i).GetSpeedY()*1000), Scalar(0,65,190), 1);
+        }
+        
+        for (int i = 0; i<balls.size(); i++)
+        {
+            circle(outimg, Point(balls[i].GetX(), balls[i].GetY()), 10, Scalar(0,10,245), -1);
+            line(outimg, Point(balls[i].GetX(), balls[i].GetY()), Point(balls[i].GetX()+balls[i].GetSpeedX()*100, balls[i].GetY()+balls[i].GetSpeedY()*100), Scalar(0,0,255), 1);
+        }
+        
+        Point realRobotPos = Point(realRobot->GetX(), realRobot->GetY());
+        
+        rectangle(outimg, realRobotPos-cv::Point(realRobot->GetWidth()/2,realRobot->GetHeight()/2), realRobotPos+cv::Point(realRobot->GetWidth()/2,0), Scalar(150,0,0), 1);
+        
+        rectangle(outimg, robotPos-cv::Point(realRobot->GetWidth()/2,realRobot->GetHeight()/2), robotPos+cv::Point(realRobot->GetWidth()/2,0), Scalar(255,0,0), -1);
+        
+        
+        
+        return outimg;
+    }
+
+    void Detector::FindBall(cv::Mat frame, float deltaTime)
     {
         Mat hsv;
         
@@ -50,9 +79,15 @@ namespace RoboDodge
         
         for(i = 0; i < contours.size(); i++ )
         {
+            Point2f bottomPoint = *max_element(contours[i].begin(), contours[i].end(),
+                [](const Point& lhs, const Point& rhs) {
+                    return lhs.y < rhs.y;
+            });
             Point2f centerofmass = Point2f( mu[i].m10/mu[i].m00 , mu[i].m01/mu[i].m00 );
-            circle( result, centerofmass, 1, Scalar(0,0,255), -1, 8, 0 );
-            Centers.push_back(centerofmass);
+            
+            Point2f bottomCenter = Point2f(centerofmass.x, bottomPoint.y);
+            circle( result, bottomCenter, 1, Scalar(0,0,255), -1, 8, 0 );
+            Centers.push_back(bottomCenter);
         }
         
         //Поиск линии
@@ -102,19 +137,24 @@ namespace RoboDodge
         float screenWidth = frame.cols;
         float screenHeight = frame.rows;
         
-        Point screenRobot(screenWidth/2, screenHeight);
-        
         float screenWallHeight = (screenLineLeft.y+screenLineRight.y)/2;
         
         robotPos.x = (screenWidth/2-screenLineLeft.x)/(screenLineRight.x - screenLineLeft.x) * surfaceX;
         robotPos.y = surfaceY;
         
-        if (Centers.size()>0)
+        vector<Ball> approximateBalls;
+        
+        for (i = 0; i < Centers.size(); i++)
         {
-            Point screenBall;
+            Point2f ballPos;
             
-            screenBall = Centers[0];
-            float screenCross = -(((screenBall.x-screenRobot.x)*screenWallHeight + (screenRobot.x * screenBall.y - screenBall.x * screenRobot.y))/(screenRobot.y - screenBall.y));
+            Point2f screenBall = Centers[i];
+                    
+            Point screenRobot(screenBall.x, screenHeight);
+            
+            //float screenCross = -(((screenBall.x-screenRobot.x)*screenWallHeight + (screenRobot.x * screenBall.y - screenBall.x * screenRobot.y))/(screenRobot.y - screenBall.y));
+            
+            float screenCross = screenBall.x;
             
             cv::line(result, screenRobot, Point(screenCross, screenWallHeight), cv::Scalar(0,0,255), 1);
             
@@ -122,27 +162,58 @@ namespace RoboDodge
             float bpY = ((screenBall.y-screenWallHeight)/(screenHeight-screenWallHeight));
             ballPos.y =  bpY * surfaceY;
             ballPos.x = -((modelCrossX - robotPos.x) * ballPos.y + (robotPos.x*ballPos.y-modelCrossX*robotPos.y))/(robotPos.y);
-            ballPos.y =  ((bpY+1)*(bpY+1)*(bpY+1)*(bpY+1)-1) * surfaceY;
+            ballPos.y =  ((bpY+1)*(bpY+1)*(bpY+1)*(bpY+1)*(bpY+1)*(bpY+1)-1) * surfaceY;
             
+            int minIndex = 0;
+            float minDistance = 10000, mindx, mindy;
+            
+            for (j = 0; j < balls.size(); j++)
+            {
+                float dx = ballPos.x-balls[i].GetX();
+                float dy = ballPos.y-balls[i].GetY();
+                float distance = sqrt(dx*dx+dy*dy);
+                
+                if (distance<minDistance)
+                {
+                    minIndex = j;
+                    minDistance = distance;
+                    mindx = dx;
+                    mindy = dy;
+                }
+            }
+            
+            if (minDistance < 1000)
+            {
+                Ball approximateBall(10, ballPos.x, ballPos.y, (balls[minIndex].GetSpeedX()+mindx*deltaTime)/2, (balls[minIndex].GetSpeedY()+mindy*deltaTime)/2);
+                approximateBalls.push_back(approximateBall);
+            }
+            else
+            {
+                Ball approximateBall(10, ballPos.x, ballPos.y, 0, 0);
+                approximateBalls.push_back(approximateBall);
+            }
         }
         
-        Mat3b finalResult(frame.rows, frame.cols+result.cols, Vec3b(0,0,0));
-
-        frame.copyTo(finalResult(cv::Rect(0, 0, frame.cols, frame.rows)));
-        result.copyTo(finalResult(cv::Rect(frame.cols, 0, result.cols, result.rows)));
+        balls.clear();
+        
+        for (int i =0; i< approximateBalls.size(); i++)
+        {
+            balls.push_back(approximateBalls[i]);
+        }
+        
+        Mat3b result2D = Get2DResult();
+        
+        Mat3b finalResult(result2D.rows, result2D.cols+result.cols, Vec3b(0,0,0));
+        
+        result2D.copyTo(finalResult(cv::Rect(result.cols, 0, result2D.cols, result2D.rows)));
+        result.copyTo(finalResult(cv::Rect(0, 0, result.cols, result.rows)));
         
         resultMat = finalResult.clone();
-
     }
 
-    float Detector::GetBallX()
+    vector<Ball>* Detector::GetBalls()
     {
-        return ballPos.x;
-    }
-
-    float Detector::GetBallY()
-    {
-        return ballPos.y;
+        return &balls;
     }
 
     float Detector::GetRobotX()

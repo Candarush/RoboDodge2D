@@ -18,9 +18,10 @@ namespace RoboDodge
         float GetX();
         float GetY();
         float GetWidth();
+        float GetHeight();
         float GetSpeedX();
         bool GetAP();
-        bool Danger(Ball ball);
+        bool Danger(Ball ball, float border);
         void Dodge(Ball ball, float deltm, Surface ground);
     };
 }

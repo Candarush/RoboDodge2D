@@ -27,6 +27,16 @@ namespace RoboDodge
         return x;
     }
 
+    float Robot::GetWidth()
+    {
+        return width;
+    }
+    
+    float Robot::GetHeight()
+    {
+        return height;
+    }
+
     float Robot::GetY()
     {
         return y;
@@ -40,7 +50,7 @@ namespace RoboDodge
         return autopilot;
     }
 
-    bool Robot::Danger(Ball ball) {
+    bool Robot::Danger(Ball ball, float border) {
         float tm, dx, dy, metr, spd;
         dx = ball.GetX() - x;
         dy = ball.GetY() - y;
@@ -48,10 +58,10 @@ namespace RoboDodge
         spd = sqrt(pow(ball.GetSpeedX(), 2) + pow(ball.GetSpeedY(), 2));
         tm = metr / spd;
         
-        if (((x - width) < ball.GetSpeedX() * tm + ball.GetX()) &&
-            (ball.GetSpeedX() * tm + ball.GetX() < (x + width)) &&
-            ((y - width) < ball.GetSpeedY() * tm + ball.GetY()) &&
-            (ball.GetSpeedY() * tm + ball.GetY() < (y + width)))
+        if (((x - width - border) < ball.GetSpeedX() * tm + ball.GetX()) &&
+            (ball.GetSpeedX() * tm + ball.GetX() < (x + width + border)) &&
+            ((y - width - border) < ball.GetSpeedY() * tm + ball.GetY()) &&
+            (ball.GetSpeedY() * tm + ball.GetY() < (y + width + border)))
         {
             autopilot = true;
             return true;

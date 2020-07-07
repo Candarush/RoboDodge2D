@@ -12,10 +12,12 @@ OPENGLLIBS = -lGL -lglut -lGLU -lGLEW
 
 all: exec clean
 
-exec: main.o Detector.o OpenGLRenderer.o Surface.o Ball.o BallLauncher.o Robot.o
-	$(CC) OpenGLRenderer.o Detector.o Surface.o  Ball.o BallLauncher.o Robot.o main.o -o exec $(OPENCVLIBS) $(OPENGLLIBS)
+exec: main.o Detector.o OpenGLRenderer.o Surface.o Ball.o BallLauncher.o Robot.o DBclient.o
+	$(CC) DBclient.o OpenGLRenderer.o Detector.o Surface.o  Ball.o BallLauncher.o Robot.o main.o -o exec $(OPENCVLIBS) $(OPENGLLIBS)
 main.o: main.cpp
 	$(CC) -std=$(STD) -c main.cpp
+DBclient.o: DBclient.cpp
+	$(CC) -std=$(STD) -c DBclient.cpp
 Detector.o: Detector.cpp Detector.hpp
 	$(CC) -std=$(STD) -c Detector.cpp
 OpenGLRenderer.o: OpenGLRenderer.cpp

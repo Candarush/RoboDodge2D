@@ -14,6 +14,11 @@ RUN apt-get install libopencv-dev -y
 #OPENGL
 RUN apt-get install -y mesa-common-dev freeglut3-dev libglew-dev
 
+#INFLUXDB
+RUN apt-get install influxdb -y
+RUN service influxdb start
+#RUN influxd
+
 # Сборка
 COPY . /usr/src/
 WORKDIR /usr/src/

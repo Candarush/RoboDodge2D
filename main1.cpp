@@ -12,6 +12,7 @@ using namespace std;
 
 int main(int argc, char const** argv)
 {
+    int choice;
     float width = 300;
     float height = 300;
     float speed = 100;
@@ -23,6 +24,8 @@ int main(int argc, char const** argv)
     SfSurface ground(width,height,0,0);
     SfRobot robot(25,25,width/8, height-25, speed, speed);
     SfBall ball(10, width / 2 + 100, height / 2 - 100, 90, 120);
+    cout << "Choose the robot's mode:\n1. Catch\n2. Dodge" << endl;
+    cin >> choice;
     sf::RenderWindow window(sf::VideoMode(width, height), "RoboDodge");
     
     while (window.isOpen())
@@ -45,9 +48,12 @@ int main(int argc, char const** argv)
            robot.Control(&event, robot.GetAP(), deltaTime, ground);
        }
         ball.UpdatePosition(deltaTime, ground);
-        if (robot.Danger(ball) == true) {
+        if ((robot.Danger(ball) == true)&&(robot.ballCatch(choice) == false)) {
             robot.Dodge(ball, deltaTime, ground);
             robot.PutAP(false);
+        }
+        else if ((robot.Danger(ball) == false)&&(robot.ballCatch(choice) == true)) {
+            robot.Catch(ball, deltaTime, ground);
         }
         window.clear();
         

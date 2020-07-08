@@ -20,8 +20,8 @@ namespace RoboDodge
         static Robot* robot;
         static float movementDirection;
         static Surface* ground;
+        static void (*updateFuncPtr)(float, Mat frame);
         
-        static void (*UpdateFunc)(float, Mat frame);
         static void OpenGLUpdate();
         void InitRendering();
         static void HandleResize(int iwidth, int iheight);

@@ -2,7 +2,7 @@
 
 namespace RoboDodge
 {
-    Robot::Robot(float iwidth, float iheight, float ix, float iy, float ispeedx)
+    Robot::Robot(float iwidth, float iheight, float ix, float iy, float ispeedx, bool iisCatching)
     {
         width = iwidth;
         height = iheight;
@@ -10,6 +10,7 @@ namespace RoboDodge
         y = iy;
         speedx = ispeedx;
         autopilot = false;
+        isCatching = iisCatching;
     }
 
     void Robot::Move(float ix, float deltaTime, Surface ground)
@@ -51,6 +52,9 @@ namespace RoboDodge
     }
 
     bool Robot::Danger(Ball ball, float border) {
+        if (isCatching)
+            return false;
+        
         float tm, dx, dy, metr, spd;
         dx = ball.GetX() - x;
         dy = ball.GetY() - y;
@@ -78,6 +82,36 @@ namespace RoboDodge
         else
         {
             Move(1, deltm, ground);
+        }
+    }
+
+    void Robot::Catch(vector<Ball> iballs, Surface ground, float deltm)
+    {
+        if (isCatching)
+        {
+            float maxY = 0;
+            Ball ballToCatch(0,0,0,0,0);
+            
+            for (int i = 0; i < iballs.size(); i++)
+            {
+                if (iballs[i].GetSpeedY() > 0 && iballs[i].GetY() > maxY)
+                {
+                    ballToCatch = iballs[i];
+                    maxY = iballs[i].GetY();
+                }
+            }
+            
+            if (ballToCatch.GetSpeedY() > 0)
+            {
+                if (ballToCatch.GetX() < x - width/3)
+                {
+                    Move(-1, deltm, ground);
+                }
+                if (ballToCatch.GetX() > x + width/3)
+                {
+                    Move(1, deltm, ground);
+                }
+            }
         }
     }
 }

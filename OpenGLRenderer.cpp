@@ -8,14 +8,14 @@ namespace RoboDodge
     Robot* OpenGLRenderer::robot;
     float OpenGLRenderer::movementDirection = 0;
     vector<Ball>* OpenGLRenderer::balls;
-    void (*OpenGLRenderer::UpdateFunc)(float, Mat frame);
+    void (*OpenGLRenderer::updateFuncPtr)(float, Mat frame);
 
-    OpenGLRenderer::OpenGLRenderer(int argc, char** argv, float iwindowWidth, float iwindowHeight, void (* iUpdateFunc)(float, Mat), vector<Ball>* iballs, Robot* irobot, Surface* iground)
+    OpenGLRenderer::OpenGLRenderer(int argc, char** argv, float iwindowWidth, float iwindowHeight, void (*iupdateFuncPtr)(float, Mat), vector<Ball>* iballs, Robot* irobot, Surface* iground)
     {
         balls = iballs;
         robot = irobot;
         ground = iground;
-        UpdateFunc = iUpdateFunc;
+        updateFuncPtr = iupdateFuncPtr;
         glutInit(&argc, argv);
         glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
         glutInitWindowSize (iwindowWidth, iwindowHeight);
@@ -109,9 +109,11 @@ namespace RoboDodge
 
     void OpenGLRenderer::DrawSphere(float radius, float x, float y, float z)
     {
+        glPushMatrix();
         glColor3f(1, 0, 0);
         glTranslatef(x,y,z);
         glutSolidSphere(radius,20,20);
+        glPopMatrix();
     }
 
     void OpenGLRenderer::Draw()
@@ -161,7 +163,7 @@ namespace RoboDodge
 
         robot->Move(movementDirection,deltaTime, *ground);
         
-        UpdateFunc(deltaTime, img.clone());
+        updateFuncPtr(deltaTime, img.clone());
         
         timer = ((float)clock()/ ( CLOCKS_PER_SEC / 1000 ));
         
@@ -182,6 +184,18 @@ namespace RoboDodge
             {
                 if (robot->GetAP() == false)
                     movementDirection = 1;
+                break;
+            }
+            case 101:
+            {
+                if (robot->isCatching == false)
+                {
+                    robot->isCatching = true;
+                }
+                else
+                {
+                    robot->isCatching = false;
+                }
                 break;
             }
             default: break;

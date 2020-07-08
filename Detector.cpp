@@ -14,10 +14,13 @@ namespace RoboDodge
     {
         Mat3b outimg(surfaceX, surfaceY, Vec3b(150,150,150));
         
-        for (int i = 0; i<realBalls->size(); i++)
+        if (realBalls != nullptr)
         {
-            circle(outimg, Point(realBalls->at(i).GetX(), realBalls->at(i).GetY()), 10, Scalar(0,50,205), 1);
-            line(outimg, Point(realBalls->at(i).GetX(), realBalls->at(i).GetY()), Point(realBalls->at(i).GetX()+realBalls->at(i).GetSpeedX()*1000, realBalls->at(i).GetY()+realBalls->at(i).GetSpeedY()*1000), Scalar(0,65,190), 1);
+            for (int i = 0; i<realBalls->size(); i++)
+            {
+                circle(outimg, Point(realBalls->at(i).GetX(), realBalls->at(i).GetY()), 10, Scalar(0,50,205), 1);
+                line(outimg, Point(realBalls->at(i).GetX(), realBalls->at(i).GetY()), Point(realBalls->at(i).GetX()+realBalls->at(i).GetSpeedX()*1000, realBalls->at(i).GetY()+realBalls->at(i).GetSpeedY()*1000), Scalar(0,65,190), 1);
+            }
         }
         
         for (int i = 0; i<balls.size(); i++)
@@ -28,10 +31,12 @@ namespace RoboDodge
         
         Point realRobotPos = Point(realRobot->GetX(), realRobot->GetY());
         
-        rectangle(outimg, realRobotPos-cv::Point(realRobot->GetWidth()/2,realRobot->GetHeight()/2), realRobotPos+cv::Point(realRobot->GetWidth()/2,0), Scalar(150,0,0), 1);
+        if (realRobot != nullptr)
+        {
+            rectangle(outimg, realRobotPos-cv::Point(realRobot->GetWidth()/2,realRobot->GetHeight()/2), realRobotPos+cv::Point(realRobot->GetWidth()/2,0), Scalar(150,0,0), 1);
+        }
         
         rectangle(outimg, robotPos-cv::Point(realRobot->GetWidth()/2,realRobot->GetHeight()/2), robotPos+cv::Point(realRobot->GetWidth()/2,0), Scalar(255,0,0), -1);
-        
         
         
         return outimg;
@@ -49,7 +54,7 @@ namespace RoboDodge
         cvtColor(frame, hsv, COLOR_BGR2HSV);
 
         
-        //Поиск шара
+        //Поиск шаров
         Mat1b mask1, mask2;
         inRange(hsv, Scalar(0, 70, 50), Scalar(10, 255, 255), mask1);
         inRange(hsv, Scalar(170, 70, 50), Scalar(180, 255, 255), mask2);

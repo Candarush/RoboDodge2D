@@ -27,6 +27,5 @@ namespace RoboDodge
         float GetRobotY();
         Mat Get2DResult();
         Mat GetResult();
-        void SendInfluxDBData();
     };
 }

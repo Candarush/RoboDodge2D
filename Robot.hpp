@@ -21,6 +21,7 @@ namespace RoboDodge
         void PutTimeX(float itime);
         void PutAP(bool iauto);
         bool GetAP();
+        bool ballCatch(int choice);
         bool Danger(Ball ball);
     };
 }

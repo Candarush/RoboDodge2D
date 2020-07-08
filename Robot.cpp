@@ -67,6 +67,11 @@ namespace RoboDodge
             return false;
         }
     }
+    void Robot::Catch(Ball ball, float deltm, Surface ground) {
+        PutAP(true);
+        Move(ball.GetSpeedX() * deltm, 0, ground);
+        shape.setPosition(GetX(), GetY());
+    }
     bool Robot::Danger(Ball ball) {
         float tm, dx, dy, metr, spd;
         dx = ball.GetX() - GetX();

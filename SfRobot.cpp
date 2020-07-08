@@ -78,11 +78,11 @@ namespace RoboDodge
             }*/
     }
     void SfRobot::Dodge(Ball ball, float deltm, Surface ground){
-        if(x - ball.GetX() < 0){
+        if (((x - ball.GetX() < 0) && (y > ball.GetY())) || ((x - ball.GetX() >= 0) && (ball.GetY() + ball.GetRadius() == ground.GetHeight()))) {
             Move(ball.GetSpeedX() * deltm, 0, ground);
             shape.setPosition(GetX(), GetY());
         }
-        else if (x - ball.GetX() >= 0){
+        else if (((x - ball.GetX() >= 0) && (y > ball.GetY())) || ((x - ball.GetX() < 0) && (ball.GetY() + ball.GetRadius() == ground.GetHeight()))){
             Move(-ball.GetSpeedX() * deltm, 0, ground);
             shape.setPosition(GetX(), GetY());
         }

@@ -52,7 +52,7 @@ int main(int argc, char const** argv)
             robot.Dodge(ball, deltaTime, ground);
             robot.PutAP(false);
         }
-        else if ((robot.Danger(ball) == false)&&(robot.ballCatch(choice) == true)) {
+        else if (robot.ballCatch(choice) == true) {
             robot.Catch(ball, deltaTime, ground);
         }
         window.clear();

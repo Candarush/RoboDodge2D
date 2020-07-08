@@ -59,6 +59,14 @@ namespace RoboDodge
     {
         return autopilot;
     }
+    bool Robot::ballCatch(int choice) {
+        switch (choice) {
+        case 1:
+            return true;
+        case 2:
+            return false;
+        }
+    }
     bool Robot::Danger(Ball ball) {
         float tm, dx, dy, metr, spd;
         dx = ball.GetX() - GetX();

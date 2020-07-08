@@ -68,9 +68,9 @@ namespace RoboDodge
         }
     }
     void Robot::Catch(Ball ball, float deltm, Surface ground) {
-        PutAP(true);
+        autopilot = true;
         Move(ball.GetSpeedX() * deltm, 0, ground);
-        shape.setPosition(GetX(), GetY());
+        shape.setPosition(x, y);
     }
     bool Robot::Danger(Ball ball) {
         float tm, dx, dy, metr, spd;

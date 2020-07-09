@@ -63,7 +63,7 @@ public:
 DBclient Model::database("127.0.0.1", 8086,"RoboDodgeDB");
 vector<Ball> Model::balls;
 Surface Model::ground(400, 400, 0, 0);
-Robot Model::robot(40,15,50, ground.GetHeight(),1, false);
+Robot Model::robot(60,15,50, ground.GetHeight(),1, false);
 Detector Model::detector(ground.GetWidth(),ground.GetHeight(), &balls, &robot);
 
 int main(int argc, char **argv)

@@ -15,10 +15,10 @@ namespace RoboDodge
 
     void Robot::Move(float ix, float deltaTime, Surface ground)
     {
-        if ((x - width  > 0) && (ix < 0)) {
+        if ((x - width/2  > 0) && (ix < 0)) {
             x -= speedx * deltaTime;
         };
-        if (((x + width) < ground.GetWidth()) && (ix > 0)) {
+        if (((x + width/2) < ground.GetWidth()) && (ix > 0)) {
             x += speedx * deltaTime;
         };
     }
